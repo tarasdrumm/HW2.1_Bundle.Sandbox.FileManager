@@ -15,15 +15,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         configureAppApperance()
-        
         return true
     }
 
     private func configureAppApperance() {
         UINavigationBar.appearance().tintColor = .darkGray
+        UITabBar.appearance().tintColor = .darkGray
+        UITabBar.appearance().barTintColor = .white
+        
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.backgroundColor = .white
-        window?.rootViewController = UINavigationController(rootViewController: DocumentsViewController())
+        let passwordVC = PasswordViewController()
+        window?.rootViewController = UINavigationController(rootViewController: passwordVC)
         window?.makeKeyAndVisible()
     }
 }

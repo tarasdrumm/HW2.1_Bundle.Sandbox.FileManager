@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		262CB064285F2D48008993EE /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262CB063285F2D48008993EE /* TabBarController.swift */; };
+		262CB066285F2E9D008993EE /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262CB065285F2E9D008993EE /* SettingsViewController.swift */; };
+		262CB068285F4227008993EE /* PasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262CB067285F4227008993EE /* PasswordViewController.swift */; };
+		26504BEB285F9BCE00C98ECA /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26504BEA285F9BCE00C98ECA /* SettingsView.swift */; };
 		26AEB7462857AD6500CD3182 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AEB7452857AD6500CD3182 /* AppDelegate.swift */; };
 		26AEB74A2857AD6500CD3182 /* DocumentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AEB7492857AD6500CD3182 /* DocumentsViewController.swift */; };
 		26AEB7502857AD6500CD3182 /* Bundle_Sandbox_FileManager.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 26AEB74E2857AD6500CD3182 /* Bundle_Sandbox_FileManager.xcdatamodeld */; };
@@ -18,6 +22,10 @@
 /* Begin PBXFileReference section */
 		221FED448C2209F95F5E1916 /* Pods-Bundle.Sandbox.FileManager.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bundle.Sandbox.FileManager.release.xcconfig"; path = "Target Support Files/Pods-Bundle.Sandbox.FileManager/Pods-Bundle.Sandbox.FileManager.release.xcconfig"; sourceTree = "<group>"; };
 		24F3553C7EE9ED7F3F77C4CA /* Pods_Bundle_Sandbox_FileManager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Bundle_Sandbox_FileManager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		262CB063285F2D48008993EE /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		262CB065285F2E9D008993EE /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		262CB067285F4227008993EE /* PasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordViewController.swift; sourceTree = "<group>"; };
+		26504BEA285F9BCE00C98ECA /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		26AEB7422857AD6500CD3182 /* Bundle.Sandbox.FileManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bundle.Sandbox.FileManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		26AEB7452857AD6500CD3182 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		26AEB7492857AD6500CD3182 /* DocumentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsViewController.swift; sourceTree = "<group>"; };
@@ -40,6 +48,39 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		26504BE9285F9BB100C98ECA /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				262CB065285F2E9D008993EE /* SettingsViewController.swift */,
+				26504BEA285F9BCE00C98ECA /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		26504BEC285F9BE800C98ECA /* Documents */ = {
+			isa = PBXGroup;
+			children = (
+				26AEB7492857AD6500CD3182 /* DocumentsViewController.swift */,
+			);
+			path = Documents;
+			sourceTree = "<group>";
+		};
+		26504BED285F9C0800C98ECA /* Password */ = {
+			isa = PBXGroup;
+			children = (
+				262CB067285F4227008993EE /* PasswordViewController.swift */,
+			);
+			path = Password;
+			sourceTree = "<group>";
+		};
+		26504BEE285F9C7700C98ECA /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				262CB063285F2D48008993EE /* TabBarController.swift */,
+			);
+			path = TabBar;
+			sourceTree = "<group>";
+		};
 		26AEB7392857AD6500CD3182 = {
 			isa = PBXGroup;
 			children = (
@@ -62,7 +103,10 @@
 			isa = PBXGroup;
 			children = (
 				26AEB7452857AD6500CD3182 /* AppDelegate.swift */,
-				26AEB7492857AD6500CD3182 /* DocumentsViewController.swift */,
+				26504BEE285F9C7700C98ECA /* TabBar */,
+				26504BE9285F9BB100C98ECA /* Settings */,
+				26504BEC285F9BE800C98ECA /* Documents */,
+				26504BED285F9C0800C98ECA /* Password */,
 				26AEB7512857AD6B00CD3182 /* Assets.xcassets */,
 				26AEB7532857AD6B00CD3182 /* LaunchScreen.storyboard */,
 				26AEB7562857AD6B00CD3182 /* Info.plist */,
@@ -202,9 +246,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26504BEB285F9BCE00C98ECA /* SettingsView.swift in Sources */,
 				26AEB74A2857AD6500CD3182 /* DocumentsViewController.swift in Sources */,
+				262CB064285F2D48008993EE /* TabBarController.swift in Sources */,
 				26AEB7502857AD6500CD3182 /* Bundle_Sandbox_FileManager.xcdatamodeld in Sources */,
+				262CB066285F2E9D008993EE /* SettingsViewController.swift in Sources */,
 				26AEB7462857AD6500CD3182 /* AppDelegate.swift in Sources */,
+				262CB068285F4227008993EE /* PasswordViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

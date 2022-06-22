@@ -7,5 +7,6 @@ target 'Bundle.Sandbox.FileManager' do
 
   # Pods for Bundle.Sandbox.FileManager
   pod 'SnapKit', '~> 5.0.0'
+  pod 'KeychainAccess'
 
 end

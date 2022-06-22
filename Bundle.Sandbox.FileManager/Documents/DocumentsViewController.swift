@@ -14,6 +14,14 @@ class DocumentsViewController: UIViewController {
     var directory: URL?
     var contentOfDirectory: [String]?
     
+    lazy var titleLabel: UILabel = {
+        let titleLabel = UILabel()
+        titleLabel.text = "Documents"
+        titleLabel.font = UIFont.systemFont(ofSize: 18, weight: .medium)
+        titleLabel.textColor = .darkGray
+        return titleLabel
+    }()
+    
     lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.dataSource = self
@@ -28,6 +36,16 @@ class DocumentsViewController: UIViewController {
         imagePicker.delegate = self
         return imagePicker
     }()
+        
+    private lazy var addPhotosButton: UIBarButtonItem = {
+        let photoBarButton = UIImage(systemName: "photo.on.rectangle")
+        return UIBarButtonItem(image: photoBarButton, style: .done, target: self, action: #selector(photoButton))
+    }()
+    
+    private lazy var addFolderButton: UIBarButtonItem = {
+        let folderBarButton = UIImage(systemName: "plus.rectangle.on.folder")
+        return UIBarButtonItem(image: folderBarButton, style: .done, target: self, action: #selector(folderButton))
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,18 +55,8 @@ class DocumentsViewController: UIViewController {
     
     private func setupNavigationBar() {
         navigationController?.navigationBar.isHidden = false
-        title = "Documents"
-        let leftBarButton = UIImage(systemName: "plus.rectangle.on.folder")
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: leftBarButton,
-                                                           style: .done,
-                                                           target: self,
-                                                           action: #selector(folderButton))
-        
-        let rightBarButton = UIImage(systemName: "photo.on.rectangle")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: rightBarButton,
-                                                            style: .done,
-                                                            target: self,
-                                                            action: #selector (photoButton))
+        navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: titleLabel)
+        navigationItem.rightBarButtonItems = [addPhotosButton, addFolderButton]
     }
     
     private func setupSubviews() {
@@ -57,11 +65,13 @@ class DocumentsViewController: UIViewController {
         backButton.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).inset(10)
             make.centerX.equalToSuperview()
+            make.height.equalTo(30)
+            make.width.equalTo(120)
         }
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.top.equalTo(backButton.snp.bottom).offset(10)
-            make.left.right.bottom.equalTo(view.safeAreaLayoutGuide).inset(10)
+            make.left.right.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
     
@@ -85,15 +95,25 @@ class DocumentsViewController: UIViewController {
     
     let backButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Back", for: .normal)
+        button.setTitle("Выйти из папки", for: .normal)
         button.setTitleColor(.black, for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+        button.layer.masksToBounds = true
+        button.layer.borderColor = UIColor.lightGray.cgColor
+        button.layer.borderWidth = 0.3
+        button.layer.cornerRadius = 5
         button.addTarget(self, action: #selector(backToDocuments), for: .touchUpInside)
         return button
     }()
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        currentDirectory(rootDirectory!)
+        tableView.reloadData()
     }
     
     init() {
@@ -121,6 +141,14 @@ class DocumentsViewController: UIViewController {
         let content = try? FileManager.default.contentsOfDirectory(at: name, includingPropertiesForKeys: nil, options: .skipsHiddenFiles).map(){ $0.lastPathComponent }
         guard let content = content else { return }
         contentOfDirectory = content
+        contentOfDirectory?.sort(by: { lhs, rhs in
+            if UserDefaults.standard.bool(forKey: "List.descending") {
+                return lhs > rhs
+            }
+            else {
+                return lhs < rhs
+            }
+        })
         directory = name
     }
 
