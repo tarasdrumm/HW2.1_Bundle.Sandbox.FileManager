@@ -17,7 +17,6 @@ class SettingView: UIView {
         label.text = text
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textColor = .darkGray
-        
         return label
     }()
     
@@ -28,7 +27,6 @@ class SettingView: UIView {
         control.layer.masksToBounds = true
         control.backgroundColor = .white
         control.selectedSegmentTintColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-        
         return control
     }()
 
@@ -56,7 +54,7 @@ class SettingView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    @objc func change() {
+    @objc private func change() {
         changeHandler?(segmentedControl.selectedSegmentIndex)
     }
 }

@@ -25,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.backgroundColor = .white
-        let passwordVC = PasswordViewController()
+        let passwordVC = PasswordViewController(mode: .basic)
         window?.rootViewController = UINavigationController(rootViewController: passwordVC)
         window?.makeKeyAndVisible()
     }

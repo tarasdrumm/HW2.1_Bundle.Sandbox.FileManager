@@ -10,11 +10,11 @@ import SnapKit
 
 class DocumentsViewController: UIViewController {
     
-    var rootDirectory: URL?
-    var directory: URL?
-    var contentOfDirectory: [String]?
+    private var rootDirectory: URL?
+    private var directory: URL?
+    private var contentOfDirectory: [String]?
     
-    lazy var titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let titleLabel = UILabel()
         titleLabel.text = "Documents"
         titleLabel.font = UIFont.systemFont(ofSize: 18, weight: .medium)
@@ -22,7 +22,7 @@ class DocumentsViewController: UIViewController {
         return titleLabel
     }()
     
-    lazy var tableView: UITableView = {
+    private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.dataSource = self
         tableView.delegate = self
@@ -30,7 +30,7 @@ class DocumentsViewController: UIViewController {
         return tableView
     }()
     
-    lazy var imagePicker: UIImagePickerController = {
+    private lazy var imagePicker: UIImagePickerController = {
         let imagePicker = UIImagePickerController()
         imagePicker.sourceType = .photoLibrary
         imagePicker.delegate = self
@@ -60,7 +60,6 @@ class DocumentsViewController: UIViewController {
     }
     
     private func setupSubviews() {
-        
         view.addSubview(backButton)
         backButton.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).inset(10)
@@ -75,25 +74,7 @@ class DocumentsViewController: UIViewController {
         }
     }
     
-    lazy var alertController: UIAlertController = {
-        let alert = UIAlertController(title: "Создать папку", message: "Введите имя папки", preferredStyle: .alert)
-        alert.addTextField() { name in
-            name.textColor = .black
-            name.font = UIFont.systemFont(ofSize: 16, weight: .regular)
-            name.autocapitalizationType = .none
-            name.placeholder = "Имя папки"
-        }
-        let okAction = UIAlertAction(title: "Создать", style: .default) { [self] _ in
-            guard let textFields = alert.textFields?[0].text else { return }
-            createFolder((alert.textFields![0].text)!)
-        }
-        let cancelAction = UIAlertAction(title: "Отмена", style: .default)
-        alert.addAction(okAction)
-        alert.addAction(cancelAction)
-        return alert
-    }()
-    
-    let backButton: UIButton = {
+    private let backButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Выйти из папки", for: .normal)
         button.setTitleColor(.black, for: .normal)
@@ -112,7 +93,9 @@ class DocumentsViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        currentDirectory(rootDirectory!)
+        if let rootDirectory = rootDirectory {
+            updateDirectory(rootDirectory)
+        }
         tableView.reloadData()
     }
     
@@ -120,24 +103,40 @@ class DocumentsViewController: UIViewController {
         rootDirectory = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
         super.init(nibName: nil, bundle: nil)
         guard let rootDirectory = rootDirectory else { return }
-        currentDirectory(rootDirectory)
+        updateDirectory(rootDirectory)
         directory = rootDirectory
     }
     
     @objc private func folderButton(sender: UIBarButtonItem) {
-        present(alertController, animated: true, completion: nil)
+        let alert = UIAlertController(title: "Создать папку", message: "Введите имя папки", preferredStyle: .alert)
+        alert.addTextField() { name in
+            name.textColor = .black
+            name.font = UIFont.systemFont(ofSize: 16, weight: .regular)
+            name.autocapitalizationType = .none
+            name.placeholder = "Имя папки"
+        }
+        let okAction = UIAlertAction(title: "Создать", style: .default) { [self] _ in
+            guard let text = alert.textFields?[0].text else { return }
+            createFolder(text)
+        }
+        let cancelAction = UIAlertAction(title: "Отмена", style: .default)
+        alert.addAction(okAction)
+        alert.addAction(cancelAction)
+        present(alert, animated: true, completion: nil)
     }
     
     @objc private func photoButton(sender: UIBarButtonItem) {
         present(imagePicker, animated: true, completion: nil)
     }
     
-    @objc func backToDocuments() {
-        currentDirectory(rootDirectory!)
+    @objc private func backToDocuments() {
+        if let rootDirectory = rootDirectory {
+            updateDirectory(rootDirectory)
+        }
         tableView.reloadData()
     }
     
-    func currentDirectory(_ name: URL) {
+    private func updateDirectory(_ name: URL) {
         let content = try? FileManager.default.contentsOfDirectory(at: name, includingPropertiesForKeys: nil, options: .skipsHiddenFiles).map(){ $0.lastPathComponent }
         guard let content = content else { return }
         contentOfDirectory = content
@@ -152,11 +151,11 @@ class DocumentsViewController: UIViewController {
         directory = name
     }
 
-    func createFolder(_ name: String) {
+    private func createFolder(_ name: String) {
         guard let directory = directory else { return }
         let newDirectory = directory.appendingPathComponent(name, isDirectory: true)
         try? FileManager.default.createDirectory(atPath: newDirectory.path, withIntermediateDirectories: true, attributes: nil)
-        currentDirectory(directory)
+        updateDirectory(directory)
         tableView.reloadData()
     }
 }
@@ -176,8 +175,8 @@ extension DocumentsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
       
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-            guard let _ = contentOfDirectory?[indexPath.item] else { return UITableViewCell(style: .default, reuseIdentifier: "cell")}
-            cell.textLabel?.text = contentOfDirectory![indexPath.item]
+            guard let name = contentOfDirectory?[indexPath.item] else { return UITableViewCell(style: .default, reuseIdentifier: "cell")}
+            cell.textLabel?.text = name
             return cell
     }
     
@@ -186,7 +185,7 @@ extension DocumentsViewController: UITableViewDelegate, UITableViewDataSource {
             guard let cellText = tableView.cellForRow(at: indexPath)?.textLabel?.text else { return }
             directory = directory.appendingPathComponent(cellText)
             if (try? directory.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) ?? false {
-                currentDirectory(directory)
+                updateDirectory(directory)
                 tableView.reloadData()
         }
     }
@@ -194,10 +193,20 @@ extension DocumentsViewController: UITableViewDelegate, UITableViewDataSource {
 
 extension DocumentsViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        let image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
-        let saveImage = image.pngData()
-        let imageUrl = directory?.appendingPathComponent("picture_" + String("abcde123456".randomElement()!)).appendingPathExtension("png")
-        if FileManager.default.fileExists(atPath: imageUrl!.path) {
+        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
+            dismiss(animated: true, completion: nil)
+            return
+        }
+        guard let imageURL = info[UIImagePickerController.InfoKey.imageURL] as? URL else {
+            dismiss(animated: true, completion: nil)
+            return
+        }
+        let saveImage = image.jpegData(compressionQuality: 1)
+        guard let imageUrl = directory?.appendingPathComponent(imageURL.lastPathComponent) else {
+            dismiss(animated: true, completion: nil)
+            return
+        }
+        if FileManager.default.fileExists(atPath: imageUrl.path) {
             dismiss(animated: true, completion: nil)
             let alertPicture = UIAlertController(title: "Попробуйте снова", message: "картинка уже существует", preferredStyle: .alert)
             present(alertPicture, animated: true){ [self] in
@@ -205,8 +214,10 @@ extension DocumentsViewController: UINavigationControllerDelegate, UIImagePicker
                 dismiss(animated: true, completion: nil)
             }
         } else {
-            try? saveImage?.write(to: imageUrl!)
-            currentDirectory(directory!)
+            try? saveImage?.write(to: imageUrl)
+            if let directory = directory {
+                updateDirectory(directory)
+            }
             tableView.reloadData()
         }
         dismiss(animated: true, completion: nil)

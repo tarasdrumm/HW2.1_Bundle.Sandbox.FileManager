@@ -35,7 +35,7 @@ class SettingsViewController: UIViewController {
         button.setTitle("Сохранить изменения", for: .normal)
         button.setTitleColor(.darkGray, for: .normal)
         button.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-        button.addTarget(self, action: #selector(actionButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(actionInstallButton), for: .touchUpInside)
         button.layer.masksToBounds = true
         button.layer.borderColor = UIColor.lightGray.cgColor
         button.layer.borderWidth = 0.3
@@ -97,12 +97,12 @@ class SettingsViewController: UIViewController {
         }
     }
     
-    @objc private func actionButton() {
+    @objc private func actionInstallButton() {
         tabBarController?.selectedIndex = 0
     }
     
-    @objc func changePasswordButton() {
-        let passwordVC = PasswordViewController()
+    @objc private func changePasswordButton() {
+        let passwordVC = PasswordViewController(mode: .change)
         navigationController?.present(passwordVC, animated: true, completion: nil)
     }
 }

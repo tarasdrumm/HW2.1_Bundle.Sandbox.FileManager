@@ -9,13 +9,18 @@ import UIKit
 import SnapKit
 import KeychainAccess
 
-
 let keychain = Keychain(service: "Taras-Andreev.Bundle-Sandbox-FileManager")
 
 class PasswordViewController: UIViewController {
 
-    lazy var hasPassword = keychain["password"] != nil
-    var firstPassword: String?
+    enum Mode {
+        case basic
+        case change
+    }
+
+    private let mode: Mode
+    private lazy var hasPassword = keychain["password"] != nil
+    private var firstPassword: String?
   
     private lazy var textField: UITextField = {
         let field = UITextField()
@@ -39,18 +44,27 @@ class PasswordViewController: UIViewController {
         button.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
         return button
     }()
-    
+
+    init(mode: Mode) {
+        self.mode = mode
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         navigationController?.navigationBar.isHidden = true
-        if hasPassword {
+        if hasPassword && mode == .basic {
             button.setTitle("Введите пароль", for: .normal)
         }
         else {
             button.setTitle("Создать пароль", for: .normal)
         }
-
+        
         view.addSubview(textField)
         view.addSubview(button)
 
@@ -66,11 +80,11 @@ class PasswordViewController: UIViewController {
         }
     }
 
-    @objc func tapButton() {
+    @objc private func tapButton() {
         guard let text = textField.text else {
             return
         }
-        if hasPassword {
+        if hasPassword && mode == .basic {
             if text == keychain["password"] {
                 navigationController?.pushViewController(TabBarController(), animated: true)
             }
@@ -90,7 +104,7 @@ class PasswordViewController: UIViewController {
             if let firstPassword = firstPassword {
                 if text == firstPassword {
                     keychain["password"] = text
-                    navigationController?.pushViewController(TabBarController(), animated: true)
+                    dismiss(animated: true, completion: nil)
                     return
                 }
                 else {
